@@ -4,29 +4,26 @@ namespace App\Http\Requests\Article;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class StoreArticleRequest extends FormRequest
+class UpdateArticleRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
      *
      * @return bool
      */
+
+ 
     public function authorize()
     {
         return true;
     }
 
-    /**
-     * Get the validation rules that apply to the request.
-     *
-     * @return array<string, mixed>
-     */
     public function rules()
     {
         return [
-            'title' => 'required|unique:articles|max:255',
+            'title' => 'required|max:255',
             'full_text' => 'required',
-            'image' =>'required|image|mimes:jpeg,png,jpg|max:2048',
+            'image' =>'image|mimes:jpeg,png,jpg|max:2048',
             'category' => 'required',
             'tag' => 'required'
 
@@ -37,12 +34,10 @@ class StoreArticleRequest extends FormRequest
     {
         return [
             'title.required' => 'yes, the title is required',
-            'title.unique' => 'title has to be unique',
             'full_text.required' => 'A full text is required',
             'category.required' => 'Category is required',
             'tag.required' => 'Tag is required'
         ];
     }
-
 
 }
