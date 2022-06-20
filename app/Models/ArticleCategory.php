@@ -18,9 +18,9 @@ class ArticleCategory extends Model
 
     ///note: ArticleCategory uses hasOne to access Article 
     //BECAUSE, article holds the foreign id of articlecategory i.e category_id
-    public function article()
+    public function articles()
     {
-        return $this->hasOne(Article::class);
+        return $this->hasMany(Article::class);
     }
 
 }
