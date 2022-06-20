@@ -7,7 +7,9 @@ use App\Models\ArticleTags;
 use Illuminate\Http\Request;
 use App\Models\ArticleCategory;
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Storage;
 use App\Http\Requests\Article\StoreArticleRequest;
+use App\Http\Requests\Article\UpdateArticleRequest;
 
 class ArticleController extends Controller
 {
@@ -26,7 +28,6 @@ class ArticleController extends Controller
     public function myArticles()
     {
         $articles = Article::with('category','user')->where('user_id',auth()->user()->id)->paginate(10);
-        // dd($myArticles);
         return view('articles.my-articles',compact('articles'));
     }
 
@@ -37,10 +38,8 @@ class ArticleController extends Controller
      */
     public function create()
     {
-        //
         $categories = ArticleCategory::select('id','name')->get();
         $tags = ArticleTags::select('id','name')->get();
-        // dd($tags);
         return view('articles.create-article',compact('categories','tags'));
     }
 
@@ -72,15 +71,19 @@ class ArticleController extends Controller
      
     }
 
+
+    
     /**
      * Display the specified resource.
      *
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
+    public function show(Article $article)
     {
-        //
+        $category = ArticleCategory::find($article->category_id);
+        $tagss = ArticleTags::select('id','name')->get();
+        return view('articles.show-article',compact('article','category','tagss'));
     }
 
     /**
@@ -89,10 +92,13 @@ class ArticleController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function edit($id)
+    public function edit(Article $article)
     {
-       
-        $article = Article::find($id);
+        
+       if( auth()->id() != $article->user_id ){
+          return view('errors.403');
+       }
+
         $categories = ArticleCategory::select('id','name')->get();
         $tagss = ArticleTags::select('id','name')->get();
         return view('articles.edit-article',compact('article','categories','tagss'));
@@ -105,10 +111,30 @@ class ArticleController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(UpdateArticleRequest $request, $id)
     {
-        //
-        dd('its working o');
+        $article = Article::where('id',$id)->update([
+            'title' => $request->title,
+            'full_text' => $request->full_text,
+            'category_id' => $request->category,
+            'tags' => implode(',',$request->tag),
+            'user_id' => auth()->id()
+        ]);
+
+        if($request->hasFile('image'))
+        {
+           //if there's a record, delete what's currently in record
+            if( Storage::exists('public/articleImages/'.$id) ){
+                Storage::deleteDirectory('public/articleImages/'.$id);
+            }
+
+            $imageName = request()->file('image')->getClientOriginalName();
+            request()->file('image')->storeAs('public/articleImages',$id.'/'.$imageName);
+            Article::find($id)->update(['image_upload' => $imageName]);
+          
+        }
+
+        return redirect()->route('articles.index')->with('message', 'Article successfully updated!');
     }
 
     /**

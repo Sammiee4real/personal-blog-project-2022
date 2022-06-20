@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Articles\ArticleController;
+use App\Http\Controllers\Articles\CategoryController;
 
 /*
 |--------------------------------------------------------------------------
@@ -28,6 +29,9 @@ Route::middleware('auth')->group( function(){
         Route::get('myarticles',[ArticleController::class,'myArticles'])->name(
             'articles.myarticles');
         Route::resource('articles', ArticleController::class);    
+    }); 
+    Route::prefix('categories/')->group(function (){
+        Route::resource('categories', CategoryController::class);      
     }); 
 });
 

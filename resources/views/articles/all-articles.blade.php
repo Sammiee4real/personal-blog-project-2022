@@ -96,9 +96,10 @@
                             <td class="px-6 py-4">
                                 {{ $article->created_at }}
                             </td>
-                            <td class="px-6 py-4 text-right">
+                            <td class="pr-10  py-4 text-left ">
                                 @if( auth()->id() == $article->user_id )
-                                     <a href="{{ route('articles.edit',$article->id) }}" class="font-medium text-blue-600 dark:text-blue-500 hover:underline">Edit</a>                                  
+                                  <a href="{{ route('articles.show',$article->id) }}" class="font-medium text-blue-600 dark:text-blue-500 hover:underline">View</a><br>                                  
+                                  <a href="{{ route('articles.edit',$article->id) }}" class="font-medium text-blue-600 dark:text-blue-500 hover:underline">Edit</a>                                  
                                     @else
                                       No access
                                 @endif

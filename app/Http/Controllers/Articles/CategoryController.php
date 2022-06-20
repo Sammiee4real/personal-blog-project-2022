@@ -2,8 +2,10 @@
 
 namespace App\Http\Controllers\Articles;
 
-use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use App\Models\ArticleCategory;
+use App\Http\Controllers\Controller;
+use App\Http\Requests\Category\StoreCategoryRequest;
 
 class CategoryController extends Controller
 {
@@ -14,7 +16,8 @@ class CategoryController extends Controller
      */
     public function index()
     {
-        //
+        $categories = ArticleCategory::all();
+        return view('categories.index',compact('categories'));
     }
 
     /**
@@ -25,6 +28,7 @@ class CategoryController extends Controller
     public function create()
     {
         //
+        return view('categories.create');
     }
 
     /**
@@ -33,9 +37,14 @@ class CategoryController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(StoreCategoryRequest $request)
     {
-        //
+
+         ArticleCategory::create([
+             'name' => $request->name
+         ]);
+ 
+         return redirect()->route('categories.index')->with('message', 'Category successfully created!');
     }
 
     /**
@@ -55,9 +64,13 @@ class CategoryController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function edit($id)
+    public function edit(ArticleCategory $category)
     {
-        //
+        if( auth()->id() == 1){
+            return view('categories.edit',compact('category'));
+        }else{
+            return view('errors.403');
+        }
     }
 
     /**
@@ -67,9 +80,14 @@ class CategoryController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(StoreCategoryRequest $request, $id)
     {
         //
+        ArticleCategory::where('id',$id)->update([
+            'name' => $request->name
+        ]);
+
+        return redirect()->route('categories.index')->with('message', 'Category successfully updated!');
     }
 
     /**
