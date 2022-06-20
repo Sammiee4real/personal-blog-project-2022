@@ -31,7 +31,7 @@ Route::middleware('auth')->group( function(){
         Route::resource('articles', ArticleController::class);    
     }); 
     Route::prefix('categories/')->group(function (){
-        Route::resource('categories', CategoryController::class);      
+        Route::resource('categories', CategoryController::class)->except(['destroy','show']);      
     }); 
 });
 

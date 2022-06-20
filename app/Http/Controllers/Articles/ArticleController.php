@@ -20,8 +20,8 @@ class ArticleController extends Controller
      */
     public function index()
     {
-        $articles = Article::with('category','user')->paginate(10);
-        return view('articles.all-articles',compact('articles'));
+        $articles = Article::with('category','user')->latest()->paginate(10);
+        return view('articles.index',compact('articles'));
   
     }
 
@@ -40,7 +40,7 @@ class ArticleController extends Controller
     {
         $categories = ArticleCategory::select('id','name')->get();
         $tags = ArticleTags::select('id','name')->get();
-        return view('articles.create-article',compact('categories','tags'));
+        return view('articles.create',compact('categories','tags'));
     }
 
     /**
@@ -83,7 +83,7 @@ class ArticleController extends Controller
     {
         $category = ArticleCategory::find($article->category_id);
         $tagss = ArticleTags::select('id','name')->get();
-        return view('articles.show-article',compact('article','category','tagss'));
+        return view('articles.show',compact('article','category','tagss'));
     }
 
     /**
@@ -101,7 +101,7 @@ class ArticleController extends Controller
 
         $categories = ArticleCategory::select('id','name')->get();
         $tagss = ArticleTags::select('id','name')->get();
-        return view('articles.edit-article',compact('article','categories','tagss'));
+        return view('articles.edit',compact('article','categories','tagss'));
     }
 
     /**
