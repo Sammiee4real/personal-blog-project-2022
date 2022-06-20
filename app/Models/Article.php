@@ -41,12 +41,12 @@ class Article extends Model
         return $this->belongsTo(User::class);
     }
 
-    protected function createdAt() : Attribute
-    {
-        return Attribute::make(
-            get: fn($value) => date('F-d-Y H:i:s'),
-        );
-    }
+    // protected function createdAt() : Attribute
+    // {
+    //     return Attribute::make(
+    //         get: fn($value) => date('F-d-Y H:i:s'),
+    //     );
+    // }
 
     protected function tags(): Attribute
     {
