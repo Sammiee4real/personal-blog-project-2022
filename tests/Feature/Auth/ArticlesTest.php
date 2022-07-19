@@ -44,11 +44,11 @@ class ArticlesTest extends TestCase
     public function test_an_article_can_be_stored()
     {
         $user = User::factory()->create();  
-        $article = Article::factory()->create()->toArray();
+        $article = Article::factory()->create();
        
         //there could be a better approach
-        $response = $this->followingRedirects()->actingAs($user)->post( route('articles.store') , $article);
-        $response->assertStatus(200);
+        $response = $this->followingRedirects()->actingAs($user)->post( route('articles.store') , $article->toArray());
+        $this->assertDatabaseHas(Article::class,['id'=>$article->id]);
     }
 
     public function test_an_article_can_be_updated()
@@ -61,7 +61,7 @@ class ArticlesTest extends TestCase
  
         //there could be a better approach
         $this->followingRedirects()->actingAs($user)->put('articles/articles/'.$article->id,$article->toArray());
-        $this->assertDatabaseHas('articles',['id' => $article->id, 'title'=>'Updated Record', 'full_text'=>'Updated Text' ]);    
+        $this->assertDatabaseHas(Article::class,['id' => $article->id, 'title'=>'Updated Record', 'full_text'=>'Updated Text' ]);    
     }
 
     public function test_an_article_can_be_deleted()
@@ -71,6 +71,6 @@ class ArticlesTest extends TestCase
 
         //there could be a better approach
         $this->actingAs($user)->delete('articles/articles/'.$article->id);
-        $this->assertDatabaseMissing('articles',['id' => $article->id]);    
+        $this->assertDatabaseMissing(Article::class,['id' => $article->id]);    
     }
 }
