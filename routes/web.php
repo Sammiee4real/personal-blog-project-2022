@@ -20,6 +20,8 @@ Route::view('/','index')->name('index');
 
 
 //ROUTE GROUPING
+Route::view('/login','login')->name('login');
+
 Route::middleware('auth')->group( function(){
     Route::view('/dashboard','dashboard')->name('dashboard');
     Route::view('/about-me','about-me')->name('about-me');
